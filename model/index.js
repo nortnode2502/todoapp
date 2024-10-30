@@ -37,9 +37,33 @@ const pool = mysql.createPool({
  pool.releaseConnection(conn);
   
  }
+
+ async function insertTodo(task) {
+  // For pool initialization, see above
+  const conn = await pool.getConnection();
+  
+  
+  // Do something with the connection
+  try {
+     const [results] = await conn.query(
+       'insert into todos (description, priority, is_done) values (?, ?, ?);',
+       [task.description, task.priority, task.isDone]
+     );
+      console.log(results);
+     return results;
+  
+  
+   } catch (err) {
+     console.log(err);
+   }
+  // Don't forget to release the connection when finished!
+  pool.releaseConnection(conn);
+   
+  }
  
  
  module.exports = {
-    getAllTodos
+    getAllTodos,
+    insertTodo
  }
  
