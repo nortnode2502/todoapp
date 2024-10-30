@@ -60,6 +60,10 @@ const pool = mysql.createPool({
   pool.releaseConnection(conn);
    
   }
+
+  async function fetchOneTask(taskId) {
+    //funktsioon tagastab andmebaasikirje
+  }
  
  
  module.exports = {

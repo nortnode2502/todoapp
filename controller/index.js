@@ -27,6 +27,10 @@ async function addTask(description, priority) {
     return true
 }
 
+async function getOneTask(taskId) {
+    //loeb medelist andmebaasikirje ning tagastab andmed
+}
+
 module.exports = {
     getAllTasks,
     addTask

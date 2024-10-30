@@ -27,5 +27,9 @@ app.get('/', (req, res) => {
     res.render('esileht')
 })
 
+app.get('/api/task/:taskId', (req,res) => {
+    //võtab parameetri taskId ning küsib selle abil kontrollerist ühe taski andmed
+})
+
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
