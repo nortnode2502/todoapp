@@ -1,29 +1,32 @@
 const {getAllTodos, insertTodo} = require("../model")
 
-async function getAllTasks() {
-    const tasks = await getAllTodos();
-    //kui vaja, siis siin võib teha andmeteisendusi
-
-    return tasks
-
+function _makeApiObjectFromData(dataObject) {
+    return {
+        id: dataObject._id,
+        nimetus: dataObject.description,
+        prioriteet: dataObject.priority,
+        kasTehtud: dataObject.isDone,
+    }
 }
 
-async function addTask(description, priority) {
-    if (priority < 0 || priority > 1) { 
-        console.log('Viga: priority võib olla ainult 0 või 1')
+async function getAllTasks() {
+    const tasks = await getAllTodos();
+    return tasks.map( el => _makeApiObjectFromData(el))
+}
+
+async function addTask(nimetus, prioriteet) {
+    if (prioriteet < 0 || prioriteet > 1) { 
+        throw new Error('Viga: prioriteet võib olla ainult 0 või 1')
         return false
     }
 
     const uusTask = {
-        description: description,
-        priority: priority,
+        description: nimetus,
+        priority: prioriteet,
         isDone: 0
     }
 
-    console.log(uusTask)
-
     await insertTodo(uusTask)
-
     return true
 }
 

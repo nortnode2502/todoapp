@@ -1,73 +1,74 @@
-const  mysql = require('mysql2/promise');
+const { MongoClient } = require("mongodb")
 
-const pool = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    port: process.env.MYSQL_PORT,
-    database: 'defaultdb',
-    password: process.env.MYSQL_PASSWORD,
-    waitForConnections: true,
-    connectionLimit: 10,
-    maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
-    idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-    queueLimit: 0,
-    enableKeepAlive: true,
-    keepAliveInitialDelay: 0,
-  });
-   
+const andmebaas = "todos"
+const salasona = process.env.MONGODB_PASSWORD
+const app = process.env.MONGODB_APP
+const connectionCluster = process.env.MONGODB_CLUSTER
 
- async function getAllTodos() {
- // For pool initialization, see above
- const conn = await pool.getConnection();
- 
- 
- // Do something with the connection
- try {
-    const [results] = await conn.query(
-      'SELECT * FROM `todos`'
-    );
-     console.log(results);
-    return results;
- 
- 
-  } catch (err) {
-    console.log(err);
-  }
- // Don't forget to release the connection when finished!
- pool.releaseConnection(conn);
-  
- }
+const mongoUrl = `mongodb+srv://${app}:${salasona}@${connectionCluster}/?retryWrites=true&w=majority&appName=Cluster0`
+const client = new MongoClient(mongoUrl);
 
- async function insertTodo(task) {
-  // For pool initialization, see above
-  const conn = await pool.getConnection();
-  
-  
-  // Do something with the connection
+const TODOS_COLLECTION = 'todo'
+
+async function getCollectionFromNewConnection(collection) {
+  await client.connect();
+  const database = client.db(andmebaas);
+  return database.collection(collection);
+}
+
+async function getAllTodos() {
   try {
-     const [results] = await conn.query(
-       'insert into todos (description, priority, is_done) values (?, ?, ?);',
-       [task.description, task.priority, task.isDone]
-     );
-      console.log(results);
-     return results;
-  
-  
-   } catch (err) {
-     console.log(err);
-   }
-  // Don't forget to release the connection when finished!
-  pool.releaseConnection(conn);
-   
+    const todosCollection = await getCollectionFromNewConnection(TODOS_COLLECTION);
+    todos = await todosCollection.find({}).toArray()
+    return todos
+  } finally {
+    client.close();
   }
+}
 
-  async function fetchOneTask(taskId) {
-    //funktsioon tagastab andmebaasikirje
+async function insertTodo({ description, priority, isDone }) {
+  try {
+    const todosCollection = await getCollectionFromNewConnection(TODOS_COLLECTION);
+    return await todosCollection.insertOne({ description, priority, isDone });
+  } finally {
+    client.close();
   }
- 
- 
- module.exports = {
-    getAllTodos,
-    insertTodo
- }
- 
+}
+
+async function updateTodo(todoId, description, priority, isDone) {
+  try {
+    todosCollection = getCollectionFromNewConnection(TODOS_COLLECTION);
+    const updateObject = {}
+    if (description !== null) {
+      updateObject.description = description
+    }
+    if (priority !== null) {
+      updateObject.priority = priority
+    }
+    if (isDone !== null) {
+      updateObject.isDone = isDone
+    }
+
+    return await todosCollection.updateOne({ _id: todoId }, { $set: updateObject });
+  } finally {
+    client.close();
+  }
+}
+
+async function fetchOneTask(todoId) {
+  try {
+    todosCollection = getCollectionFromNewConnection(TODOS_COLLECTION);
+    todos = await todosCollection.find({_id: todoId}).toArray()
+    return todos
+  } finally {
+    client.close();
+  }
+}
+
+
+module.exports = {
+  getAllTodos,
+  insertTodo,
+  updateTodo,
+  fetchOneTask
+}

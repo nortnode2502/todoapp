@@ -47,8 +47,8 @@ function getTasksHTML(tasks) {
 function getOneTaskHTML(task) {
     return `
     <div class="tasks_row">
-        <div class="col_description" >${task.DESCRIPTION}</div>
-        <div class="col_priority">${task.PRIORITY}</div>
+        <div class="col_description" >${task.nimetus}</div>
+        <div class="col_priority">${task.prioriteet}</div>
     </div>
     `
 }

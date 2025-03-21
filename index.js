@@ -1,4 +1,5 @@
 const express = require("express");
+require('dotenv').config();
 const path = require("path");
 const { getAllTasks,  addTask } = require("./controller") 
 
@@ -19,7 +20,7 @@ app.get('/api/task', async (req, res) =>  {
 
 app.post('/api/task', (req, res)  => {
     console.log(req.body)
-    addTask(req.body.description, req.body.priority)
+    addTask(req.body.nimetus, req.body.priorieet)
     res.status(201).end()
 })
 
@@ -31,5 +32,4 @@ app.get('/api/task/:taskId', (req,res) => {
     //võtab parameetri taskId ning küsib selle abil kontrollerist ühe taski andmed
 })
 
-
-app.listen(PORT, () => console.log(`Listening on ${PORT}`))
+app.listen(PORT, () => console.log(`Listening on ${process.env.PORT}`))

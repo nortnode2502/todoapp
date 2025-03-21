@@ -1,0 +1,14 @@
+
+### Loe kõigi taskide andmed
+GET HTTP://localhost:3035/api/task
+
+### Lisa task
+POST HTTP://localhost:3035/api/task
+Content-Type: application/json
+
+{
+    "nimetus": "Jaluta koera",
+    "priorieet": 1
+}
+
+
