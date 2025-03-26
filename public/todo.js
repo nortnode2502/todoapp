@@ -53,4 +53,28 @@ function getOneTaskHTML(task) {
     `
 }
 
+async function addTask() {
+    const taskDescription = document.getElementById('task_description').value
+    const taskPriority = document.getElementById('task_priority').value
+
+    const newTask = {
+        nimetus: taskDescription,
+        priorieet: taskPriority
+    }
+
+    let response = await fetch('/api/task', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newTask)
+    })
+    if (response.status === 201) {
+        fetchTasks()
+    } else {
+        console.log('Ülesande lisamine ebaõnnestus')
+    }
+    
+}
+
 fetchTasks()

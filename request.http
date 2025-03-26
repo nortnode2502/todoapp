@@ -7,7 +7,7 @@ POST HTTP://localhost:3035/api/task
 Content-Type: application/json
 
 {
-    "nimetus": "Jaluta koera",
+    "nimetus": "Mine tööle",
     "priorieet": 1
 }
 

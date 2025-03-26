@@ -11,7 +11,7 @@ function _makeApiObjectFromData(dataObject) {
 
 async function getAllTasks() {
     const tasks = await getAllTodos();
-    return tasks.map( el => _makeApiObjectFromData(el))
+    return tasks.map( _makeApiObjectFromData)
 }
 
 async function addTask(nimetus, prioriteet) {

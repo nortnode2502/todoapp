@@ -18,9 +18,8 @@ app.get('/api/task', async (req, res) =>  {
     res.send(tasks)
 } )
 
-app.post('/api/task', (req, res)  => {
-    console.log(req.body)
-    addTask(req.body.nimetus, req.body.priorieet)
+app.post('/api/task', async (req, res)  => {
+    await addTask(req.body.nimetus, req.body.priorieet)
     res.status(201).end()
 })
 
